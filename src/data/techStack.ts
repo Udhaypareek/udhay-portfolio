@@ -18,7 +18,7 @@ export const techStack: TechCategory[] = [
     items: [
       { name: 'React.js', icon: 'Code2' },
       { name: 'TypeScript', icon: 'FileType' },
-      { name: 'Next.js', icon: 'Layers' },
+      { name: 'Socket.io', icon: 'Layers' },
       { name: 'HTML5', icon: 'Globe' },
       { name: 'CSS3', icon: 'Palette' },
       { name: 'Material UI', icon: 'Component' },
@@ -43,7 +43,7 @@ export const techStack: TechCategory[] = [
       { name: 'Gemini API', icon: 'Sparkles' },
       { name: 'OpenAI', icon: 'Brain' },
       { name: 'LLM Workflows', icon: 'Workflow' },
-      { name: 'RAG Pipelines', icon: 'GitBranch' },
+      // { name: 'RAG Pipelines', icon: 'GitBranch' },
       { name: 'Async Pipelines', icon: 'RefreshCw' },
     ],
   },
@@ -53,7 +53,7 @@ export const techStack: TechCategory[] = [
     items: [
       { name: 'Git', icon: 'GitBranch' },
       { name: 'Linux', icon: 'Terminal' },
-      { name: 'Docker', icon: 'Box' },
+      { name: 'Render', icon: 'Box' },
       { name: 'VS Code', icon: 'Code' },
       { name: 'Postman', icon: 'Send' },
       { name: 'Vercel', icon: 'Triangle' },

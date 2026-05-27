@@ -1,8 +1,9 @@
+import { motion } from 'framer-motion';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import { AnimatedSection, AnimatedItem } from '../../common/AnimatedSection';
 import { SectionHeader } from '../../common/SectionHeader';
-import { SURFACE, BORDER, FLAME, TEXT_PRIMARY, TEXT_SECONDARY, TEXT_DIM, EMERALD } from '../../../theme/palette';
+import { SURFACE, BORDER, FLAME, TEXT_PRIMARY, TEXT_SECONDARY, TEXT_DIM, EMERALD, AZURE, VIOLET, CYAN } from '../../../theme/palette';
 import {
   Network, Brain, CircleDot, Terminal, GitBranch, Crosshair, Palette, BookOpen
 } from 'lucide-react';
@@ -16,14 +17,14 @@ const infoRows = [
 ];
 
 const interests = [
-  { label: 'Backend Architecture', icon: Network },
-  { label: 'AI/LLM Systems', icon: Brain },
-  { label: 'Real-Time Apps', icon: CircleDot },
-  { label: 'Linux & DevOps', icon: Terminal },
-  { label: 'System Design', icon: GitBranch },
-  { label: 'API Design', icon: Crosshair },
-  { label: 'UI Engineering', icon: Palette },
-  { label: 'Open Source', icon: BookOpen },
+  { label: 'Backend Architecture', icon: Network, color: AZURE },
+  { label: 'AI/LLM Systems', icon: Brain, color: VIOLET },
+  { label: 'Real-Time Apps', icon: CircleDot, color: FLAME },
+  { label: 'Linux & DevOps', icon: Terminal, color: EMERALD },
+  { label: 'System Design', icon: GitBranch, color: CYAN },
+  { label: 'API Design', icon: Crosshair, color: AZURE },
+  { label: 'UI Engineering', icon: Palette, color: VIOLET },
+  { label: 'Open Source', icon: BookOpen, color: FLAME },
 ];
 
 export default function About() {
@@ -69,7 +70,7 @@ export default function About() {
               </p>
               <br />
               <p>
-                My approach is engineering-first — clean architecture, modular design,
+                My approach is engineering-first clean architecture, modular design,
                 and performance-aware development. When I'm not coding, you'll find me
                 ricing my Linux setup or exploring new AI tooling.
               </p>
@@ -81,47 +82,79 @@ export default function About() {
             <Box
               sx={{
                 backgroundColor: SURFACE,
-                border: `0.5px solid ${BORDER}`,
-                borderLeft: `2px solid ${FLAME}`,
-                borderRadius: '10px',
-                p: 5,
-                fontFamily: "'IBM Plex Mono', monospace",
+                border: `1px solid ${BORDER}`,
+                borderRadius: '12px',
+                overflow: 'hidden',
+                boxShadow: '0 20px 40px -20px rgba(0,0,0,0.5)',
               }}
             >
-              {infoRows.map((row) => (
+              {/* Terminal Title Bar */}
+              <Box
+                sx={{
+                  backgroundColor: 'rgba(255,255,255,0.03)',
+                  borderBottom: `1px solid ${BORDER}`,
+                  px: 4,
+                  py: 2,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 1.5,
+                }}
+              >
+                <Box sx={{ width: 10, height: 10, borderRadius: '50%', backgroundColor: '#FF5F56' }} />
+                <Box sx={{ width: 10, height: 10, borderRadius: '50%', backgroundColor: '#FFBD2E' }} />
+                <Box sx={{ width: 10, height: 10, borderRadius: '50%', backgroundColor: '#27C93F' }} />
                 <Box
-                  key={row.label}
                   sx={{
-                    display: 'flex',
-                    gap: 4,
-                    py: 2,
-                    borderBottom: `0.5px solid ${BORDER}`,
-                    '&:last-child': { borderBottom: 'none' },
+                    ml: 2,
+                    fontFamily: "'IBM Plex Mono', monospace",
+                    fontSize: '0.65rem',
+                    color: TEXT_DIM,
+                    letterSpacing: '0.1em',
                   }}
                 >
-                  <Box
-                    sx={{
-                      fontSize: '0.6875rem',
-                      color: TEXT_DIM,
-                      letterSpacing: '0.08em',
-                      minWidth: '100px',
-                      flexShrink: 0,
-                      pt: '2px',
-                    }}
-                  >
-                    {row.label}
-                  </Box>
-                  <Box
-                    sx={{
-                      fontSize: '0.8125rem',
-                      color: row.isStatus ? EMERALD : TEXT_PRIMARY,
-                      fontWeight: row.isStatus ? 500 : 400,
-                    }}
-                  >
-                    {row.value}
-                  </Box>
+                  guest@udhay: ~
                 </Box>
-              ))}
+              </Box>
+
+              <Box sx={{ p: 5, fontFamily: "'IBM Plex Mono', monospace" }}>
+                {infoRows.map((row) => (
+                  <Box
+                    key={row.label}
+                    sx={{
+                      display: 'flex',
+                      gap: 4,
+                      py: 2.5,
+                      borderBottom: `1px solid rgba(255,255,255,0.03)`,
+                      '&:last-child': { borderBottom: 'none' },
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        fontSize: '0.6875rem',
+                        color: TEXT_DIM,
+                        letterSpacing: '0.08em',
+                        minWidth: '100px',
+                        flexShrink: 0,
+                        pt: '2px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 1
+                      }}
+                    >
+                      {row.label}
+                    </Box>
+                    <Box
+                      sx={{
+                        fontSize: '0.8125rem',
+                        color: row.isStatus ? EMERALD : TEXT_PRIMARY,
+                        fontWeight: row.isStatus ? 500 : 400,
+                      }}
+                    >
+                      {row.value}
+                    </Box>
+                  </Box>
+                ))}
+              </Box>
             </Box>
           </AnimatedItem>
         </Box>
@@ -132,7 +165,7 @@ export default function About() {
             <Box
               sx={{
                 fontFamily: "'IBM Plex Mono', monospace",
-                fontSize: '0.6875rem',
+                fontSize: '0.8rem',
                 color: TEXT_DIM,
                 letterSpacing: '0.08em',
                 textTransform: 'uppercase',
@@ -154,43 +187,95 @@ export default function About() {
               gap: 3,
             }}
           >
-            {interests.map((item) => {
+            {interests.map((item, _index) => {
               const Icon = item.icon;
               return (
                 <AnimatedItem key={item.label}>
                   <Box
+                    component={motion.div}
+                    whileHover="hover"
+                    initial="initial"
                     sx={{
+                      position: 'relative',
                       backgroundColor: SURFACE,
-                      border: `0.5px solid ${BORDER}`,
-                      borderRadius: '8px',
+                      border: `1px solid ${BORDER}`,
+                      borderRadius: '12px',
                       p: 4,
                       display: 'flex',
+                      flexDirection: 'column',
                       alignItems: 'center',
+                      justifyContent: 'center',
                       gap: 3,
-                      transition: 'all 200ms ease',
+                      height: '120px',
                       cursor: 'default',
+                      overflow: 'hidden',
+                      transition: 'border-color 0.3s ease',
                       '&:hover': {
-                        borderLeft: `2px solid ${FLAME}`,
-                        backgroundColor: '#161616',
-                        '& .interest-icon': {
-                          color: FLAME,
-                        },
+                        borderColor: item.color,
                       },
                     }}
                   >
-                    <Box className="interest-icon" sx={{ color: TEXT_DIM, transition: 'color 200ms ease', flexShrink: 0 }}>
-                      <Icon size={16} />
+                    {/* Linux "Process" bar background effect */}
+                    <Box
+                      component={motion.div}
+                      variants={{
+                        initial: { scaleX: 0, opacity: 0 },
+                        hover: { scaleX: 1, opacity: 0.05 }
+                      }}
+                      sx={{
+                        position: 'absolute',
+                        inset: 0,
+                        backgroundColor: item.color,
+                        transformOrigin: 'left',
+                        zIndex: 0,
+                      }}
+                    />
+
+                    <Box 
+                      className="interest-icon" 
+                      component={motion.div}
+                      variants={{
+                        initial: { y: 0, color: TEXT_DIM },
+                        hover: { y: -5, color: item.color }
+                      }}
+                      sx={{ 
+                        zIndex: 1,
+                        transition: 'color 0.3s ease'
+                      }}
+                    >
+                      <Icon size={24} strokeWidth={1.5} />
                     </Box>
+
                     <Box
                       sx={{
                         fontFamily: "'IBM Plex Mono', monospace",
-                        fontSize: '0.6875rem',
+                        fontSize: '0.7rem',
                         color: TEXT_SECONDARY,
                         letterSpacing: '0.02em',
+                        textAlign: 'center',
+                        zIndex: 1,
+                        lineHeight: 1.2
                       }}
                     >
                       {item.label}
                     </Box>
+
+                    {/* Linux-style corner accent */}
+                    <Box
+                      sx={{
+                        position: 'absolute',
+                        top: 0,
+                        right: 0,
+                        width: '24px',
+                        height: '24px',
+                        background: `linear-gradient(225deg, ${item.color}33 50%, transparent 50%)`,
+                        opacity: 0,
+                        transition: 'opacity 0.3s ease',
+                        '.MuiBox-root:hover &': {
+                          opacity: 1,
+                        }
+                      }}
+                    />
                   </Box>
                 </AnimatedItem>
               );
