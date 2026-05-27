@@ -1,39 +1,34 @@
 import { useState, useEffect } from 'react';
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
 import Box from '@mui/material/Box';
-import IconButton from '@mui/material/IconButton';
-import Drawer from '@mui/material/Drawer';
-import List from '@mui/material/List';
-import ListItemButton from '@mui/material/ListItemButton';
-import { Menu, X, Terminal } from 'lucide-react';
-import { useScrollProgress } from '../../hooks/useScrollProgress';
-import { BORDER, FLAME, TEXT_SECONDARY, TEXT_PRIMARY, SURFACE } from '../../theme/palette';
+import Tooltip from '@mui/material/Tooltip';
+import { motion } from 'framer-motion';
+import { User, Layers, Briefcase, Folder, Activity, Mail } from 'lucide-react';
+import { BORDER, SURFACE, FLAME, TEXT_SECONDARY, TEXT_PRIMARY, AZURE, CYAN, EMERALD, VIOLET } from '../../theme/palette';
 
 const navItems = [
-  { label: 'About', href: '#about' },
-  { label: 'Stack', href: '#techstack' },
-  { label: 'Experience', href: '#experience' },
-  { label: 'Projects', href: '#projects' },
-  { label: 'Status', href: '#system-status' },
-  { label: 'Contact', href: '#contact' },
+  { label: 'About', href: '#about', icon: User, color: FLAME },
+  { label: 'Stack', href: '#techstack', icon: Layers, color: AZURE },
+  { label: 'Experience', href: '#experience', icon: Briefcase, color: VIOLET },
+  { label: 'Projects', href: '#projects', icon: Folder, color: CYAN },
+  { label: 'Status', href: '#system-status', icon: Activity, color: EMERALD },
+  { label: 'Contact', href: '#contact', icon: Mail, color: FLAME },
 ];
 
 export function Navbar() {
-  const { scrolled } = useScrollProgress();
-  const [mobileOpen, setMobileOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('');
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveSection(entry.target.id);
-          }
-        });
+        // Find the overlapping sections and set active to the most visible one
+        const visibleEntries = entries.filter(entry => entry.isIntersecting);
+        if (visibleEntries.length > 0) {
+          // Sort by visibility ratio and pick the highest
+          visibleEntries.sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+          setActiveSection(visibleEntries[0].target.id);
+        }
       },
-      { threshold: 0.3, rootMargin: '-80px 0px 0px 0px' }
+      { threshold: [0.2, 0.5, 0.8], rootMargin: '-10% 0px -40% 0px' }
     );
 
     navItems.forEach(({ href }) => {
@@ -45,7 +40,6 @@ export function Navbar() {
   }, []);
 
   const handleNavClick = (href: string) => {
-    setMobileOpen(false);
     const el = document.querySelector(href);
     if (el) {
       el.scrollIntoView({ behavior: 'smooth' });
@@ -53,154 +47,118 @@ export function Navbar() {
   };
 
   return (
-    <>
-      <AppBar
-        component="nav"
-        elevation={0}
-        sx={{
-          backgroundColor: scrolled ? `rgba(10, 10, 10, 0.85)` : 'transparent',
-          backdropFilter: scrolled ? 'blur(12px)' : 'none',
-          borderBottom: scrolled ? `0.5px solid ${BORDER}` : '0.5px solid transparent',
-          transition: 'all 300ms ease',
-          boxShadow: 'none',
-        }}
-      >
-        <Toolbar
-          sx={{
-            maxWidth: '1200px',
-            width: '100%',
-            mx: 'auto',
-            px: { xs: 4, md: 6 },
-            py: 2,
-            justifyContent: 'space-between',
-          }}
-        >
-          {/* Logo */}
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 2,
-              cursor: 'pointer',
-              '&:hover': { opacity: 0.8 },
-            }}
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          >
-            <Terminal size={18} color={FLAME} />
-            <Box
-              sx={{
-                fontFamily: "'IBM Plex Mono', monospace",
-                fontSize: '0.8125rem',
-                fontWeight: 600,
-                color: TEXT_PRIMARY,
-                letterSpacing: '0.02em',
-              }}
-            >
-              {'>'}_
-            </Box>
-          </Box>
-
-          {/* Desktop nav */}
-          <Box
-            sx={{
-              display: { xs: 'none', md: 'flex' },
-              alignItems: 'center',
-              gap: 1,
-            }}
-          >
-            {navItems.map((item) => (
-              <Box
-                key={item.label}
-                onClick={() => handleNavClick(item.href)}
-                sx={{
-                  fontFamily: "'IBM Plex Mono', monospace",
+    <Box
+      component={motion.nav}
+      initial={{ y: 150, x: '-50%', opacity: 0 }}
+      animate={{ y: 0, x: '-50%', opacity: 1 }}
+      transition={{ 
+        type: 'spring', 
+        stiffness: 260, 
+        damping: 20, 
+        delay: 0.1 
+      }}
+      sx={{
+        position: 'fixed',
+        bottom: { xs: 16, md: 32 },
+        left: '50%',
+        zIndex: 1100,
+        display: 'flex',
+        alignItems: 'center',
+        gap: { xs: 1, md: 2 },
+        padding: { xs: '8px 12px', md: '12px 20px' },
+        backgroundColor: 'rgba(15, 15, 15, 0.7)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        border: `1px solid rgba(255, 255, 255, 0.08)`,
+        borderRadius: '100px',
+        boxShadow: '0 20px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255,255,255,0.1)',
+      }}
+    >
+      {navItems.map((item) => {
+        const Icon = item.icon;
+        const isActive = activeSection === item.href.slice(1);
+        
+        return (
+          <Tooltip 
+            title={item.label} 
+            key={item.label} 
+            placement="top" 
+            arrow
+            slotProps={{
+              tooltip: {
+                sx: {
+                  backgroundColor: SURFACE,
+                  color: TEXT_PRIMARY,
+                  fontFamily: "'Inter', sans-serif",
                   fontSize: '0.75rem',
                   fontWeight: 500,
-                  color: activeSection === item.href.slice(1) ? FLAME : TEXT_SECONDARY,
-                  letterSpacing: '0.04em',
-                  px: 3,
-                  py: 2,
-                  cursor: 'pointer',
-                  transition: 'color 200ms ease',
-                  position: 'relative',
-                  '&:hover': {
-                    color: TEXT_PRIMARY,
-                  },
-                  '&::after': {
-                    content: '""',
-                    position: 'absolute',
-                    bottom: 0,
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    width: activeSection === item.href.slice(1) ? '16px' : '0px',
-                    height: '2px',
-                    backgroundColor: FLAME,
-                    borderRadius: '1px',
-                    transition: 'width 200ms ease',
-                  },
-                }}
-              >
-                {item.label}
-              </Box>
-            ))}
-          </Box>
-
-          {/* Mobile menu button */}
-          <IconButton
-            onClick={() => setMobileOpen(!mobileOpen)}
-            sx={{
-              display: { md: 'none' },
-              color: TEXT_PRIMARY,
+                  border: `1px solid ${BORDER}`,
+                  px: 1.5,
+                  py: 0.75,
+                }
+              },
+              arrow: {
+                sx: { color: SURFACE }
+              }
             }}
           >
-            {mobileOpen ? <X size={20} /> : <Menu size={20} />}
-          </IconButton>
-        </Toolbar>
-      </AppBar>
-
-      {/* Mobile drawer */}
-      <Drawer
-        anchor="right"
-        open={mobileOpen}
-        onClose={() => setMobileOpen(false)}
-        sx={{
-          display: { md: 'none' },
-          '& .MuiDrawer-paper': {
-            width: '260px',
-            backgroundColor: SURFACE,
-            borderLeft: `0.5px solid ${BORDER}`,
-            pt: 16,
-          },
-        }}
-      >
-        <List>
-          {navItems.map((item) => (
-            <ListItemButton
-              key={item.label}
-              onClick={() => handleNavClick(item.href)}
+            <Box
+              component={motion.a}
+              href={item.href}
+              onClick={(e) => {
+                e.preventDefault();
+                handleNavClick(item.href);
+              }}
+              whileHover={{ 
+                scale: 1.4, 
+                y: -12,
+                transition: { type: 'spring', stiffness: 400, damping: 15 }
+              }}
+              whileTap={{ scale: 0.9 }}
               sx={{
-                py: 3,
-                px: 6,
+                position: 'relative',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: { xs: '44px', md: '52px' },
+                height: { xs: '44px', md: '52px' },
+                borderRadius: '50%',
+                backgroundColor: isActive ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
+                color: isActive ? item.color : TEXT_SECONDARY,
+                cursor: 'pointer',
+                textDecoration: 'none',
+                transition: 'background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease',
                 '&:hover': {
-                  backgroundColor: `${FLAME}10`,
-                },
+                  backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                  color: `${item.color} !important`,
+                  boxShadow: `0 10px 20px -10px ${item.color}`,
+                }
               }}
             >
-              <Box
-                sx={{
-                  fontFamily: "'IBM Plex Mono', monospace",
-                  fontSize: '0.8125rem',
-                  color: activeSection === item.href.slice(1) ? FLAME : TEXT_SECONDARY,
-                  fontWeight: 500,
-                  letterSpacing: '0.04em',
-                }}
-              >
-                {item.label}
-              </Box>
-            </ListItemButton>
-          ))}
-        </List>
-      </Drawer>
-    </>
+              <Icon 
+                size={22} 
+                strokeWidth={isActive ? 2.5 : 2} 
+              />
+              
+              {isActive && (
+                <Box
+                  component={motion.div}
+                  layoutId="activeNavIndicator"
+                  sx={{
+                    position: 'absolute',
+                    bottom: { xs: 4, md: 6 },
+                    width: '4px',
+                    height: '4px',
+                    borderRadius: '50%',
+                    backgroundColor: item.color,
+                    boxShadow: `0 0 8px ${item.color}`,
+                  }}
+                />
+              )}
+            </Box>
+          </Tooltip>
+        );
+      })}
+    </Box>
   );
 }

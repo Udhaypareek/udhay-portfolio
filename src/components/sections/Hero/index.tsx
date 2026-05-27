@@ -4,12 +4,12 @@ import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import { motion } from 'framer-motion';
 import { HeroBackground } from './HeroBackground';
-import { HeroMetrics } from './HeroMetrics';
+// import { HeroMetrics } from './HeroMetrics';
 import { TypewriterEffect } from '../../common/TypewriterEffect';
 import { TechTag } from '../../common/TechTag';
 import { useAppStore } from '../../../store/useAppStore';
 import { useReducedMotion } from '../../../hooks/useReducedMotion';
-import { FLAME, EMERALD, TEXT_SECONDARY, TEXT_PRIMARY, TEXT_DIM } from '../../../theme/palette';
+import { FLAME, TEXT_SECONDARY, TEXT_PRIMARY, TEXT_DIM } from '../../../theme/palette';
 import type { AccentName } from '../../../theme/palette';
 import { ArrowRight, FileDown } from 'lucide-react';
 
@@ -86,7 +86,7 @@ export default function Hero() {
           {/* Left content */}
           <Box sx={{ flex: '1 1 60%', maxWidth: { md: '65%' } }}>
             {/* Status bar */}
-            <FadeUp delay={0} reduced={prefersReducedMotion}>
+            {/* <FadeUp delay={0} reduced={prefersReducedMotion}>
               <Box
                 sx={{
                   display: 'flex',
@@ -121,14 +121,14 @@ export default function Hero() {
                   AVAILABLE FOR OPPORTUNITIES &nbsp;·&nbsp; JAIPUR, IN
                 </Box>
               </Box>
-            </FadeUp>
+            </FadeUp> */}
 
             {/* Terminal intro */}
             <FadeUp delay={0.1} reduced={prefersReducedMotion}>
               <Box
                 sx={{
                   fontFamily: "'IBM Plex Mono', monospace",
-                  fontSize: '0.8125rem',
+                  fontSize: '0.9rem',
                   color: TEXT_DIM,
                   mb: 4,
                   lineHeight: 1.8,
@@ -194,20 +194,43 @@ export default function Hero() {
             </FadeUp>
 
             {/* Tags */}
-            <FadeUp delay={0.5} reduced={prefersReducedMotion}>
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexWrap: 'wrap',
-                  gap: 2,
-                  mb: 6,
-                }}
-              >
-                {tags.map((tag) => (
-                  <TechTag key={tag.label} label={tag.label} accent={tag.accent} />
-                ))}
-              </Box>
-            </FadeUp>
+            <Box
+              sx={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: 3,
+                mb: 6,
+              }}
+            >
+              {tags.map((tag, index) => (
+                <motion.div
+                  key={tag.label}
+                  initial={{ 
+                    x: 400, // Start far from the center/right
+                    opacity: 0,
+                    scale: 0.8
+                  }}
+                  animate={{ 
+                    x: 0, 
+                    opacity: 1,
+                    scale: 1 
+                  }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 160,
+                    damping: 12,
+                    mass: 1,
+                    delay: 0.8 + index * 0.15, // Staggered entry
+                  }}
+                  whileHover={{ 
+                    scale: 1.1,
+                    transition: { type: "spring", stiffness: 400, damping: 10 }
+                  }}
+                >
+                  <TechTag label={tag.label} accent={tag.accent} />
+                </motion.div>
+              ))}
+            </Box>
 
             {/* CTA buttons */}
             <FadeUp delay={0.6} reduced={prefersReducedMotion}>
@@ -255,7 +278,7 @@ export default function Hero() {
             </FadeUp>
           </Box>
 
-          {/* Right metrics */}
+          {/* Right metrics
           <Box
             sx={{
               display: 'flex',
@@ -265,7 +288,7 @@ export default function Hero() {
             }}
           >
             <HeroMetrics />
-          </Box>
+          </Box> */}
         </Box>
       </Container>
     </Box>

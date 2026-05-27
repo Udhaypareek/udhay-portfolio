@@ -1,9 +1,9 @@
-import { createTheme } from '@mui/material/styles';
+import { createTheme, responsiveFontSizes } from '@mui/material/styles';
 import { typography } from './typography';
 import { components } from './components';
 import { BG, SURFACE, BORDER, FLAME, AZURE, VIOLET, CYAN, EMERALD, TEXT_PRIMARY, TEXT_SECONDARY, TEXT_DIM } from './palette';
 
-const theme = createTheme({
+let theme = createTheme({
   palette: {
     mode: 'dark',
     background: {
@@ -52,5 +52,7 @@ const theme = createTheme({
     },
   },
 });
+
+theme = responsiveFontSizes(theme);
 
 export default theme;

@@ -7,33 +7,82 @@ import { FLAME, AZURE } from '../../../theme/palette';
 
 function ParticleField() {
   const meshRef = useRef<THREE.Points>(null);
-  const count = 180;
+  const count = 600; // Increased count for finer details
 
-  const { positions, colors } = useMemo(() => {
+  const { positions, colors, speeds } = useMemo(() => {
     const positions = new Float32Array(count * 3);
     const colors = new Float32Array(count * 3);
+    const speeds = new Float32Array(count * 3);
+    
     const flameColor = new THREE.Color(FLAME);
     const azureColor = new THREE.Color(AZURE);
+    const violetColor = new THREE.Color('#8B5CF6'); // Gemini/cosmic accent
 
     for (let i = 0; i < count; i++) {
-      positions[i * 3] = (Math.random() - 0.5) * 20;
-      positions[i * 3 + 1] = (Math.random() - 0.5) * 12;
-      positions[i * 3 + 2] = (Math.random() - 0.5) * 8;
+      // Spread positions widely
+      positions[i * 3] = (Math.random() - 0.5) * 30; // x
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 20; // y
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 15; // z
+
+      // Very slow antigravity drift
+      speeds[i * 3] = (Math.random() - 0.5) * 0.002;
+      speeds[i * 3 + 1] = Math.random() * 0.004 + 0.001; // float up
+      speeds[i * 3 + 2] = (Math.random() - 0.5) * 0.002;
 
       const mix = Math.random();
-      const c = flameColor.clone().lerp(azureColor, mix);
+      let c;
+      if (mix < 0.33) {
+        c = flameColor.clone().lerp(violetColor, Math.random());
+      } else if (mix < 0.66) {
+        c = azureColor.clone().lerp(violetColor, Math.random());
+      } else {
+        c = azureColor.clone().lerp(flameColor, Math.random());
+      }
+
       colors[i * 3] = c.r;
       colors[i * 3 + 1] = c.g;
       colors[i * 3 + 2] = c.b;
     }
 
-    return { positions, colors };
+    return { positions, colors, speeds };
   }, []);
 
-  useFrame((_, delta) => {
+  // Create a round particle texture to avoid the "square box" look
+  const circleTexture = useMemo(() => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 32;
+    canvas.height = 32;
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      ctx.beginPath();
+      ctx.arc(16, 16, 14, 0, Math.PI * 2);
+      ctx.fillStyle = '#ffffff';
+      ctx.fill();
+    }
+    return new THREE.CanvasTexture(canvas);
+  }, []);
+
+  useFrame((state) => {
     if (!meshRef.current) return;
-    meshRef.current.rotation.y += delta * 0.02;
-    meshRef.current.rotation.x += delta * 0.008;
+    const positionsAttr = meshRef.current.geometry.attributes.position;
+    const posArray = positionsAttr.array as Float32Array;
+
+    for (let i = 0; i < count; i++) {
+      posArray[i * 3] += speeds[i * 3];
+      posArray[i * 3 + 1] += speeds[i * 3 + 1];
+      posArray[i * 3 + 2] += speeds[i * 3 + 2];
+
+      // Wrap top to bottom and side to side gracefully
+      if (posArray[i * 3 + 1] > 10) posArray[i * 3 + 1] = -10;
+      if (posArray[i * 3] > 15) posArray[i * 3] = -15;
+      if (posArray[i * 3] < -15) posArray[i * 3] = 15;
+    }
+
+    positionsAttr.needsUpdate = true;
+    
+    // Very subtle camera-like slow pan/breathing
+    meshRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.1) * 0.05;
+    meshRef.current.position.y = Math.sin(state.clock.elapsedTime * 0.2) * 0.1;
   });
 
   return (
@@ -51,10 +100,12 @@ function ParticleField() {
         />
       </bufferGeometry>
       <pointsMaterial
-        size={1.2}
+        size={0.08}
         vertexColors
+        map={circleTexture}
         transparent
-        opacity={0.4}
+        opacity={0.8}
+        blending={THREE.AdditiveBlending}
         sizeAttenuation
         depthWrite={false}
       />

@@ -10,8 +10,8 @@ interface TypewriterEffectProps {
 export function TypewriterEffect({ words, prefix = '' }: TypewriterEffectProps) {
   const { text } = useTypewriter({
     words,
-    typeSpeed: 40,
-    deleteSpeed: 30,
+    typeSpeed: 90,
+    deleteSpeed: 20,
     pauseDuration: 1500,
   });
 
