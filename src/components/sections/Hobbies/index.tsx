@@ -1,166 +1,227 @@
-import { motion } from 'framer-motion';
+import { useState, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
 import { AnimatedSection, AnimatedItem } from '../../common/AnimatedSection';
 import { SectionHeader } from '../../common/SectionHeader';
 import { hobbies } from '../../../data/hobbies';
-import { accentMap, SURFACE, BORDER, TEXT_SECONDARY, TEXT_DIM } from '../../../theme/palette';
+import { accentMap, SURFACE, BORDER, TEXT_DIM } from '../../../theme/palette';
 import type { LucideIcon } from 'lucide-react';
 import {
-  Terminal, Brain, Music, Film, MapPin, Palette, Network, GitBranch, Cpu, Activity
+  Terminal, Brain, Music, Film, MapPin, Palette, Network, GitBranch, Cpu, Activity,
+  ChevronLeft, ChevronRight, ScanLine, 
 } from 'lucide-react';
 
 const iconMap: Record<string, LucideIcon> = {
   Terminal, Brain, Music, Film, MapPin, Palette, Network, GitBranch, Cpu, Activity
 };
 
+const slideVariants = {
+  enter: (direction: number) => ({
+    x: direction > 0 ? 1000 : -1000,
+    opacity: 0,
+    scale: 0.9,
+    rotateY: direction > 0 ? 45 : -45,
+  }),
+  center: {
+    zIndex: 1,
+    x: 0,
+    opacity: 1,
+    scale: 1,
+    rotateY: 0,
+  },
+  exit: (direction: number) => ({
+    zIndex: 0,
+    x: direction < 0 ? 1000 : -1000,
+    opacity: 0,
+    scale: 0.9,
+    rotateY: direction < 0 ? 45 : -45,
+  }),
+};
+
 export default function Hobbies() {
+  const [[page, direction], setPage] = useState([0, 0]);
+  const currentIndex = ((page % hobbies.length) + hobbies.length) % hobbies.length;
+  const hobby = hobbies[currentIndex];
+  const { color } = accentMap[hobby.accent];
+  const Icon = iconMap[hobby.icon] || Terminal;
+
+  const paginate = useCallback((newDirection: number) => {
+    setPage([page + newDirection, newDirection]);
+  }, [page]);
+
   return (
     <AnimatedSection id="hobbies">
       <Container maxWidth="lg" sx={{ py: { xs: 16, md: 24 } }}>
         <AnimatedItem>
-          <SectionHeader number="06" title="Beyond Code." accentWord="Code." label="hobbies" />
+          <SectionHeader 
+            number="06" 
+            title="Beyond Code." 
+            accentWord="Code." 
+            label="visuals/interests" 
+          />
         </AnimatedItem>
 
-        <Box 
-          sx={{ 
-            backgroundColor: '#0D0D0F',
-            border: `1px solid ${BORDER}`,
-            borderRadius: '12px',
-            overflow: 'hidden',
-            fontFamily: "'IBM Plex Mono', monospace",
-          }}
-        >
-          {/* Linux Terminal Header */}
-          <Box
-            sx={{
-              px: 3,
-              py: 1.5,
-              backgroundColor: '#1A1A1E',
-              borderBottom: `1px solid ${BORDER}`,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between'
-            }}
-          >
-            <Box sx={{ display: 'flex', gap: 1 }}>
-              <Box sx={{ width: 10, height: 10, borderRadius: '50%', backgroundColor: '#FF5F56' }} />
-              <Box sx={{ width: 10, height: 10, borderRadius: '50%', backgroundColor: '#FFBD2E' }} />
-              <Box sx={{ width: 10, height: 10, borderRadius: '50%', backgroundColor: '#27C93F' }} />
-            </Box>
-            <Typography sx={{ fontSize: '0.65rem', color: TEXT_DIM, fontWeight: 500 }}>
-              bash — htop — 80x24
-            </Typography>
-            <Box sx={{ width: 30 }} />
-          </Box>
-
-          {/* Process List Content */}
-          <Box sx={{ p: 4 }}>
-            <Box
-              sx={{
-                display: 'grid',
-                gridTemplateColumns: '40px 140px 1fr 100px 80px',
-                gap: 2,
-                pb: 2,
-                borderBottom: `1px solid ${BORDER}`,
-                mb: 2,
+        <Box sx={{ position: 'relative', height: { xs: 500, md: 600 }, mt: 8 }}>
+          <AnimatePresence initial={false} custom={direction}>
+            <motion.div
+              key={page}
+              custom={direction}
+              variants={slideVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{
+                x: { type: "spring", stiffness: 300, damping: 30 },
+                opacity: { duration: 0.3 },
+                scale: { duration: 0.4 },
+                rotateY: { duration: 0.4 }
+              }}
+              drag="x"
+              dragConstraints={{ left: 0, right: 0 }}
+              dragElastic={1}
+              onDragEnd={(_, { offset, velocity }) => {
+                const swipe = Math.abs(offset.x) * velocity.x;
+                if (swipe < -10000) paginate(1);
+                else if (swipe > 10000) paginate(-1);
+              }}
+              style={{
+                position: 'absolute',
+                width: '100%',
+                height: '100%',
+                cursor: 'grab',
               }}
             >
-              {['PID', 'USER', 'COMMAND', 'STATUS', 'MEM%'].map((head) => (
-                <Typography key={head} sx={{ fontSize: '0.7rem', color: TEXT_DIM, fontWeight: 700 }}>
-                  {head}
-                </Typography>
+              <Box
+                onClick={() => paginate(1)}
+                sx={{
+                  position: 'relative',
+                  width: '100%',
+                  height: '100%',
+                  borderRadius: '24px',
+                  overflow: 'hidden',
+                  backgroundColor: SURFACE,
+                  border: `1px solid ${BORDER}`,
+                  boxShadow: `0 20px 40px rgba(0,0,0,0.4)`,
+                }}
+              >
+                {/* Background Image with Overlay */}
+                <Box
+                  component="img"
+                  src={hobby.image}
+                  alt={hobby.label}
+                  sx={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    opacity: 0.6,
+                    filter: 'grayscale(0.5) contrast(1.1)',
+                  }}
+                />
+                
+                {/* Gradient Gradient Vignette */}
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    inset: 0,
+                    background: `linear-gradient(to top, rgba(13,13,15,0.95) 0%, rgba(13,13,15,0.4) 50%, transparent 100%)`,
+                  }}
+                />
+
+                {/* Technical HUD Overlays */}
+                <Box sx={{ position: 'absolute', inset: 0, p: 4, pointerEvents: 'none' }}>
+                  {/* Top Left: Meta Info */}
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 4 }}>
+                    <Box sx={{ p: 1, borderRadius: '8px', backgroundColor: `${color}20`, color: color }}>
+                      <Icon size={24} />
+                    </Box>
+                    <Box>
+                      <Typography sx={{ fontSize: '16px', color: color, fontWeight: 700, fontFamily: "'IBM Plex Mono', monospace" }}>
+                        DATA_STREAM://{hobby.id.toUpperCase()}
+                      </Typography>
+                      {/* <Typography sx={{ fontSize: '12px', color: 'white', fontWeight: 500 }}>
+                        MODULE_{String(currentIndex + 1).padStart(2, '0')}
+                      </Typography> */}
+                    </Box>
+                  </Box>
+
+                  {/* Bottom Right: Description */}
+                  <Box sx={{ position: 'absolute', bottom: 40, left: 40, right: 40, maxWidth: 600 }}>
+                    <motion.div
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.2 }}
+                    >
+                      <Typography variant="h3" sx={{ fontWeight: 800, mb: 1, color: 'white' }}>
+                        {hobby.label}
+                      </Typography>
+                      <Typography variant="body1" sx={{ color: 'rgba(255,255,255,0.7)', maxWidth: '80%' }}>
+                        {hobby.subtext}
+                      </Typography>
+                    </motion.div>
+                  </Box>
+
+                  {/* Floating Elements (Decorative) */}
+                  <Box sx={{ position: 'absolute', top: 40, right: 40, opacity: 0.3 }}>
+                    <ScanLine size={100} strokeWidth={0.5} style={{ color: color }} />
+                  </Box>
+                </Box>
+
+                {/* Corner Accents */}
+                <Box sx={{ position: 'absolute', top: 20, right: 20, display: 'flex', gap: 1 }}>
+                   {[1, 2, 3].map(i => (
+                     <Box key={i} sx={{ width: 4, height: 4, borderRadius: '50%', backgroundColor: i === 3 ? color : BORDER }} />
+                   ))}
+                </Box>
+              </Box>
+            </motion.div>
+          </AnimatePresence>
+
+          {/* Controls */}
+          <Box
+            sx={{
+              position: 'absolute',
+              bottom: -60,
+              left: '50%',
+              transform: 'translateX(-50%)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 4
+            }}
+          >
+            <IconButton 
+              onClick={() => paginate(-1)}
+              sx={{ color: TEXT_DIM, '&:hover': { color: 'white' } }}
+            >
+              <ChevronLeft size={24} />
+            </IconButton>
+
+            <Box sx={{ display: 'flex', gap: 1.5 }}>
+              {hobbies.map((_, i) => (
+                <Box
+                  key={i}
+                  onClick={() => setPage([i, i > currentIndex ? 1 : -1])}
+                  sx={{
+                    width: i === currentIndex ? 32 : 8,
+                    height: 8,
+                    borderRadius: '4px',
+                    backgroundColor: i === currentIndex ? color : `${BORDER}`,
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    '&:hover': { backgroundColor: i === currentIndex ? color : 'white' }
+                  }}
+                />
               ))}
             </Box>
 
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-              {hobbies.map((hobby, index) => {
-                const { color } = accentMap[hobby.accent];
-                const Icon = iconMap[hobby.icon] || Terminal;
-                const pid = 1000 + index * 42;
-
-                return (
-                  <Box
-                    key={hobby.id}
-                    component={motion.div}
-                    whileHover={{ backgroundColor: 'rgba(255,255,255,0.03)' }}
-                    sx={{
-                      display: 'grid',
-                      gridTemplateColumns: '40px 140px 1fr 100px 80px',
-                      gap: 2,
-                      py: 1.5,
-                      px: 2,
-                      borderRadius: '4px',
-                      alignItems: 'center',
-                      transition: 'all 0.2s ease',
-                      borderLeft: '2px solid transparent',
-                      '&:hover': {
-                        borderLeft: `2px solid ${color}`,
-                      }
-                    }}
-                  >
-                    <Typography sx={{ fontSize: '0.75rem', color: TEXT_DIM }}>{pid}</Typography>
-                    <Typography sx={{ fontSize: '0.75rem', color: color, fontWeight: 600 }}>guest@portfolio</Typography>
-                    
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                      <Box sx={{ color: color, display: 'flex' }}>
-                        <Icon size={14} />
-                      </Box>
-                      <Box>
-                        <Typography sx={{ fontSize: '0.8rem', color: TEXT_SECONDARY, fontWeight: 600 }}>
-                          {hobby.label}
-                        </Typography>
-                        <Typography sx={{ fontSize: '0.65rem', color: TEXT_DIM }}>
-                          {hobby.subtext}
-                        </Typography>
-                      </Box>
-                    </Box>
-
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <Box 
-                        sx={{ 
-                          width: 8, 
-                          height: 8, 
-                          borderRadius: '50%', 
-                          backgroundColor: color,
-                          boxShadow: `0 0 8px ${color}80`
-                        }} 
-                      />
-                      <Typography sx={{ fontSize: '0.7rem', color: TEXT_DIM }}>RUNNING</Typography>
-                    </Box>
-
-                    <Typography sx={{ fontSize: '0.75rem', color: TEXT_DIM }}>0.{index + 4}%</Typography>
-                  </Box>
-                );
-              })}
-            </Box>
-          </Box>
-
-          {/* Terminal Footer */}
-          <Box
-            sx={{
-              p: 2,
-              backgroundColor: '#1A1A1E',
-              borderTop: `1px solid ${BORDER}`,
-              display: 'flex',
-              gap: 3,
-              overflowX: 'auto'
-            }}
-          >
-            {['F1 Help', 'F2 Setup', 'F3 Search', 'F4 Filter', 'F5 Tree', 'F6 SortBy', 'F10 Quit'].map((btn) => (
-              <Typography 
-                key={btn} 
-                sx={{ 
-                  fontSize: '0.65rem', 
-                  color: TEXT_DIM,
-                  whiteSpace: 'nowrap',
-                  '& span': { color: '#27C93F', fontWeight: 700, mr: 0.5 }
-                }}
-              >
-                <span>{btn.split(' ')[0]}</span>{btn.split(' ')[1]}
-              </Typography>
-            ))}
+            <IconButton 
+              onClick={() => paginate(1)}
+              sx={{ color: TEXT_DIM, '&:hover': { color: 'white' } }}
+            >
+              <ChevronRight size={24} />
+            </IconButton>
           </Box>
         </Box>
       </Container>

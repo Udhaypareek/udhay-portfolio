@@ -13,9 +13,10 @@ function GithubIcon({ size = 12 }: { size?: number }) {
 
 interface ProjectCardProps {
   project: Project;
+  fullWidth?: boolean;
 }
 
-export function ProjectCard({ project }: ProjectCardProps) {
+export function ProjectCard({ project, fullWidth = false }: ProjectCardProps) {
   const { color } = accentMap[project.accent];
 
   return (
@@ -26,6 +27,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
         borderRadius: '8px', // Sharper corners for dev theme
         overflow: 'hidden',
         height: '100%',
+        width: fullWidth ? '100%' : 'auto',
         display: 'flex',
         flexDirection: 'column',
         transition: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1)',

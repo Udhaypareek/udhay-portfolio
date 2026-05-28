@@ -1,17 +1,17 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { HeroBackground } from './HeroBackground';
 // import { HeroMetrics } from './HeroMetrics';
 import { TypewriterEffect } from '../../common/TypewriterEffect';
 import { TechTag } from '../../common/TechTag';
 import { useAppStore } from '../../../store/useAppStore';
 import { useReducedMotion } from '../../../hooks/useReducedMotion';
-import { FLAME, TEXT_SECONDARY, TEXT_PRIMARY, TEXT_DIM } from '../../../theme/palette';
+import { FLAME, TEXT_SECONDARY, TEXT_PRIMARY, TEXT_DIM, AZURE } from '../../../theme/palette';
 import type { AccentName } from '../../../theme/palette';
-import { ArrowRight, FileDown } from 'lucide-react';
+import { ArrowRight, FileDown, MessageSquare } from 'lucide-react';
 
 const roles = [
   'Full Stack Developer',
@@ -44,6 +44,7 @@ function FadeUp({ children, delay = 0, reduced }: { children: React.ReactNode; d
 export default function Hero() {
   const setIsLowEnd = useAppStore((s) => s.setIsLowEnd);
   const prefersReducedMotion = useReducedMotion();
+  const [flyingIcons, setFlyingIcons] = useState<{ id: number; x: number; y: number; color: string; Icon: any }[]>([]);
 
   useEffect(() => {
     const isLowEnd =
@@ -51,27 +52,80 @@ export default function Hero() {
     setIsLowEnd(isLowEnd);
   }, [setIsLowEnd]);
 
+  const handleLaunch = (e: React.MouseEvent, href: string, color: string, Icon: any, isInternal = false) => {
+    e.preventDefault();
+    const rect = e.currentTarget.getBoundingClientRect();
+    const newId = Date.now();
+    
+    setFlyingIcons(prev => [...prev, {
+      id: newId,
+      x: rect.left + rect.width / 2,
+      y: rect.top + rect.height / 2,
+      color,
+      Icon
+    }]);
+
+    setTimeout(() => {
+      setFlyingIcons(prev => prev.filter(icon => icon.id !== newId));
+      if (isInternal) {
+        document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        window.open(href, '_blank', 'noopener,noreferrer');
+      }
+    }, 600);
+  };
+
   return (
     <Box
       component="section"
       id="hero"
       sx={{
         position: 'relative',
-        minHeight: '100vh',
+        minHeight: { xs: '80vh', md: '100vh' }, // Adjusted mobile height
         display: 'flex',
         alignItems: 'center',
         overflow: 'hidden',
-        pt: { xs: 20, md: 0 },
-        pb: { xs: 16, md: 0 },
+        pt: { xs: 12, md: 0 }, // Reduced top padding
+        pb: { xs: 8, md: 0 },
       }}
     >
       <HeroBackground />
+      
+      <AnimatePresence>
+        {flyingIcons.map((icon) => (
+          <motion.div
+            key={icon.id}
+            initial={{ 
+              position: 'fixed',
+              left: icon.x,
+              top: icon.y,
+              x: '-50%',
+              y: '-50%',
+              scale: 1,
+              opacity: 1,
+              zIndex: 9999
+            }}
+            animate={{ 
+              top: -50,
+              scale: 0.5,
+              opacity: 0,
+            }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <Box sx={{ color: icon.color, filter: `drop-shadow(0 0 10px ${icon.color})` }}>
+              <icon.Icon size={32} />
+            </Box>
+          </motion.div>
+        ))}
+      </AnimatePresence>
 
       <Container
         maxWidth="lg"
         sx={{
           position: 'relative',
           zIndex: 1,
+          px: { xs: 3, md: 4 }, // Added mobile horizontal margin
         }}
       >
         <Box
@@ -234,15 +288,16 @@ export default function Hero() {
 
             {/* CTA buttons */}
             <FadeUp delay={0.6} reduced={prefersReducedMotion}>
-              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 3 }}>
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
                 <Button
                   variant="contained"
-                  onClick={() =>
-                    document.querySelector('#projects')?.scrollIntoView({ behavior: 'smooth' })
-                  }
+                  onClick={(e) => handleLaunch(e, '#projects', AZURE, ArrowRight, true)}
                   sx={{
                     fontFamily: "'IBM Plex Mono', monospace",
-                    gap: 2,
+                    gap: 1.5,
+                    px: { xs: 2, md: 3 },
+                    py: 1.5,
+                    fontSize: { xs: '0.8rem', md: '0.9rem' },
                     '&:hover': {
                       transform: 'translateY(-1px)',
                     },
@@ -253,11 +308,13 @@ export default function Hero() {
                 </Button>
                 <Button
                   variant="outlined"
-                  component="a"
-                  href="#"
+                  onClick={(e) => handleLaunch(e, '/Resume.pdf', AZURE, FileDown)}
                   sx={{
                     fontFamily: "'IBM Plex Mono', monospace",
-                    gap: 2,
+                    gap: 1.5,
+                    px: { xs: 2, md: 3 },
+                    py: 1.5,
+                    fontSize: { xs: '0.8rem', md: '0.9rem' },
                   }}
                 >
                   <FileDown size={14} />
@@ -265,11 +322,12 @@ export default function Hero() {
                 </Button>
                 <Button
                   variant="outlined"
-                  onClick={() =>
-                    document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })
-                  }
+                  onClick={(e) => handleLaunch(e, '#contact', FLAME, MessageSquare, true)}
                   sx={{
                     fontFamily: "'IBM Plex Mono', monospace",
+                    px: { xs: 2, md: 3 },
+                    py: 1.5,
+                    fontSize: { xs: '0.8rem', md: '0.9rem' },
                   }}
                 >
                   Contact

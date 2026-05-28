@@ -31,8 +31,6 @@ const rightColumn: TerminalLine[] = [
   { type: 'output', text: '› Distributed Systems' },
   { type: 'output', text: '› AI-Orchestrated Pipelines' },
   { type: 'output', text: '› Scalable Architectures' },
-  { type: 'command', text: 'uptime --status' },
-  { type: 'status', text: '● Available · Seeking opportunities' },
 ];
 
 function TerminalColumn({ lines, startDelay = 0 }: { lines: TerminalLine[]; startDelay?: number }) {
@@ -164,8 +162,8 @@ export default function SystemStatus() {
               }}
             >
               {[
-                { label: 'PROJECTS', value: '5+', color: FLAME },
-                { label: 'AI INTEGRATIONS', value: '2+', color: FLAME },
+                { label: 'PROJECTS', value: '20+', color: FLAME },
+                { label: 'AI INTEGRATIONS', value: '3+', color: FLAME },
                 { label: 'STACK', value: 'MERN', color: FLAME },
               ].map((stat) => (
                 <Box
@@ -181,7 +179,7 @@ export default function SystemStatus() {
                   <Box
                     sx={{
                       fontFamily: "'IBM Plex Mono', monospace",
-                      fontSize: '0.5625rem',
+                      fontSize: '0.8rem',
                       color: TEXT_DIM,
                       letterSpacing: '0.12em',
                       textTransform: 'uppercase',
@@ -193,7 +191,7 @@ export default function SystemStatus() {
                   <Box
                     sx={{
                       fontFamily: "'Inter', sans-serif",
-                      fontSize: '1.25rem',
+                      fontSize: '1rem',
                       fontWeight: 700,
                       color: stat.color,
                     }}
