@@ -1,7 +1,6 @@
 import Box from '@mui/material/Box';
-import { TechTag } from '../../common/TechTag';
 import type { Project } from '../../../data/projects';
-import { accentMap, SURFACE, BORDER, TEXT_PRIMARY, TEXT_SECONDARY } from '../../../theme/palette';
+import { accentMap, BORDER, TEXT_PRIMARY, TEXT_SECONDARY, TEXT_DIM } from '../../../theme/palette';
 import { ExternalLink } from 'lucide-react';
 
 function GithubIcon({ size = 12 }: { size?: number }) {
@@ -22,49 +21,72 @@ export function ProjectCard({ project }: ProjectCardProps) {
   return (
     <Box
       sx={{
-        backgroundColor: SURFACE,
-        border: `0.5px solid ${BORDER}`,
-        borderRadius: '12px',
+        backgroundColor: '#0d0d0d', // Slightly darker for terminal feel
+        border: `1px solid ${BORDER}`,
+        borderRadius: '8px', // Sharper corners for dev theme
         overflow: 'hidden',
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
-        transition: 'all 200ms ease',
+        transition: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1)',
         '&:hover': {
-          backgroundColor: '#161616',
-          borderColor: `${color}40`,
-          transform: 'scale(1.008)',
+          backgroundColor: '#111111',
+          borderColor: color,
+          transform: 'translateY(-4px)',
+          boxShadow: `0 12px 24px -12px ${color}40`,
+          '& .project-index': {
+            color: color,
+          }
         },
       }}
     >
-      <Box
-        sx={{
-          height: '2px',
-          background: `linear-gradient(90deg, ${color}, ${color}40)`,
-        }}
-      />
-
-      <Box sx={{ p: { xs: 5, md: 6 }, flex: 1, display: 'flex', flexDirection: 'column' }}>
-        <Box
-          sx={{
-            fontFamily: "'IBM Plex Mono', monospace",
-            fontSize: '0.6875rem',
-            color: color,
-            letterSpacing: '0.08em',
-            textTransform: 'uppercase',
-            mb: 3,
-          }}
-        >
-          {project.category}
+      <Box sx={{ p: 4, flex: 1, display: 'flex', flexDirection: 'column' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 3 }}>
+          <Box
+            className="project-index"
+            sx={{
+              fontFamily: "'IBM Plex Mono', monospace",
+              fontSize: '0.625rem',
+              color: TEXT_DIM,
+              transition: 'color 300ms ease',
+            }}
+          >
+            INDEX://{project.id.padStart(2, '0')}
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              gap: 2,
+            }}
+          >
+            <Box
+              component="a"
+              href={project.githubUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              sx={{ color: TEXT_DIM, '&:hover': { color: '#fff' }, transition: 'color 200ms' }}
+            >
+              <GithubIcon size={16} />
+            </Box>
+            <Box
+              component="a"
+              href={project.liveUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              sx={{ color: TEXT_DIM, '&:hover': { color: color }, transition: 'color 200ms' }}
+            >
+              <ExternalLink size={16} />
+            </Box>
+          </Box>
         </Box>
 
         <Box
           sx={{
             fontFamily: "'Inter', sans-serif",
-            fontSize: '1.125rem',
-            fontWeight: 600,
+            fontSize: '1.2rem',
+            fontWeight: 700,
             color: TEXT_PRIMARY,
-            mb: 2,
+            mb: 1,
             letterSpacing: '-0.01em',
           }}
         >
@@ -73,80 +95,48 @@ export function ProjectCard({ project }: ProjectCardProps) {
 
         <Box
           sx={{
+            fontFamily: "'IBM Plex Mono', monospace",
+            fontSize: '0.6875rem',
+            color: color,
+            letterSpacing: '0.05em',
+            textTransform: 'uppercase',
+            mb: 2,
+          }}
+        >
+          {project.category}
+        </Box>
+
+        <Box
+          sx={{
             fontFamily: "'Inter', sans-serif",
             fontSize: '0.8125rem',
             color: TEXT_SECONDARY,
-            lineHeight: 1.7,
-            mb: 5,
+            lineHeight: 1.6,
+            mb: 4,
             flex: 1,
           }}
         >
           {project.description}
         </Box>
 
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 5 }}>
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1.5 }}>
           {project.stack.map((tech) => (
-            <TechTag key={tech} label={tech} accent={project.accent} />
+            <Box
+              key={tech}
+              sx={{
+                fontFamily: "'IBM Plex Mono', monospace",
+                fontSize: '0.7rem',
+                color: TEXT_DIM,
+                px: 1.5,
+                py: 0.5,
+                borderRadius: '4px',
+                border: `1px solid ${BORDER}`,
+                backgroundColor: 'rgba(255,255,255,0.03)',
+              }}
+            >
+              {tech}
+            </Box>
           ))}
-        </Box>
-
-        <Box sx={{ display: 'flex', gap: 3, mt: 'auto' }}>
-          <Box
-            component="a"
-            href={project.liveUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 2,
-              fontFamily: "'IBM Plex Mono', monospace",
-              fontSize: '0.6875rem',
-              fontWeight: 500,
-              color: color,
-              backgroundColor: `${color}15`,
-              px: 3,
-              py: 2,
-              borderRadius: '6px',
-              textDecoration: 'none',
-              transition: 'all 200ms ease',
-              '&:hover': {
-                backgroundColor: `${color}25`,
-                transform: 'translateY(-1px)',
-              },
-            }}
-          >
-            <ExternalLink size={12} />
-            Live
-          </Box>
-          <Box
-            component="a"
-            href={project.githubUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 2,
-              fontFamily: "'IBM Plex Mono', monospace",
-              fontSize: '0.6875rem',
-              fontWeight: 500,
-              color: TEXT_SECONDARY,
-              border: `0.5px solid ${BORDER}`,
-              px: 3,
-              py: 2,
-              borderRadius: '6px',
-              textDecoration: 'none',
-              transition: 'all 200ms ease',
-              '&:hover': {
-                borderColor: TEXT_SECONDARY,
-                color: TEXT_PRIMARY,
-              },
-            }}
-          >
-            <GithubIcon />
-            GitHub
-          </Box>
         </Box>
       </Box>
     </Box>

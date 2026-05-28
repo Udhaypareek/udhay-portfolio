@@ -13,7 +13,7 @@ export const experience: ExperienceItem[] = [
     role: 'Full Stack Developer Intern',
     company: 'Creative Upaay',
     companyUrl: '#',
-    period: '2024',
+    period: 'Apr 2025 - Oct 2025',
     responsibilities: [
       'Built scalable multi-tenant backend systems with secure tenant-aware APIs',
       'Developed AI-assisted workflows with LLM APIs and async processing pipelines',

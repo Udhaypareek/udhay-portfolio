@@ -61,7 +61,15 @@ export function AnimatedSection({ children, id, delay = 0, sx = {} }: AnimatedSe
 }
 
 // Export for child elements to use stagger
-export function AnimatedItem({ children, sx = {} }: { children: ReactNode; sx?: object }) {
+export function AnimatedItem({ 
+  children, 
+  sx = {}, 
+  delay = 0 
+}: { 
+  children: ReactNode; 
+  sx?: object;
+  delay?: number;
+}) {
   const prefersReducedMotion = useReducedMotion();
 
   if (prefersReducedMotion) {
@@ -69,7 +77,11 @@ export function AnimatedItem({ children, sx = {} }: { children: ReactNode; sx?: 
   }
 
   return (
-    <motion.div variants={itemVariants} style={sx as React.CSSProperties}>
+    <motion.div 
+      variants={itemVariants} 
+      transition={{ delay }}
+      style={sx as React.CSSProperties}
+    >
       {children}
     </motion.div>
   );

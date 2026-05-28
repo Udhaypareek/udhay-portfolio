@@ -57,8 +57,8 @@ export const projects: Project[] = [
     title: 'King The Land Hotel',
     description:
       'Elegant hotel website with responsive design, booking interface, and smooth animations.',
-    category: 'FRONTEND',
-    stack: ['HTML', 'CSS', 'JavaScript'],
+    category: 'LANDING PAGE',
+    stack: ['HTML', 'CSS', 'JavaScript', 'Tailwind CSS'],
     liveUrl: 'https://king-the-land-hotel.netlify.app/',
     githubUrl: 'https://github.com/Udhaypareek/Hotel-Website',
     accent: 'emerald',
@@ -68,8 +68,8 @@ export const projects: Project[] = [
     title: 'Coffee Website',
     description:
       'Modern coffee shop website with premium UI design and smooth interactive experience.',
-    category: 'FRONTEND',
-    stack: ['HTML', 'CSS', 'JavaScript'],
+    category: 'LANDING PAGE',
+    stack: ['HTML', 'CSS', 'JavaScript', 'Tailwind CSS'],
     liveUrl: 'https://coffee-website-udhay.netlify.app/',
     githubUrl: 'https://github.com/Udhaypareek/Coffee-Website',
     accent: 'amber',

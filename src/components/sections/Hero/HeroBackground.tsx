@@ -7,7 +7,7 @@ import { FLAME, AZURE } from '../../../theme/palette';
 
 function ParticleField() {
   const meshRef = useRef<THREE.Points>(null);
-  const count = 600; // Increased count for finer details
+  const count = 4000; // Increased count for finer details
 
   const { positions, colors, speeds } = useMemo(() => {
     const positions = new Float32Array(count * 3);
@@ -100,7 +100,7 @@ function ParticleField() {
         />
       </bufferGeometry>
       <pointsMaterial
-        size={0.08}
+        size={0.04}
         vertexColors
         map={circleTexture}
         transparent
