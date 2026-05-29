@@ -90,7 +90,8 @@ export default function GitHubStats() {
             <Box 
               key={stat.id} 
               sx={{ 
-                gridColumn: stat.id === 'activity-graph' ? { lg: 'span 2' } : 'auto' 
+                gridColumn: stat.id === 'activity-graph' ? { lg: 'span 2' } : 'auto',
+                display: stat.id === 'activity-graph' ? { xs: 'none', lg: 'block' } : 'block'
               }}
             >
               <AnimatedItem>

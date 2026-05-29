@@ -145,6 +145,7 @@ export default function SystemStatus() {
                 display: 'grid',
                 gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
                 gap: 6,
+                overflow: 'hidden'
               }}
             >
               <TerminalColumn lines={leftColumn} startDelay={500} />
@@ -154,7 +155,7 @@ export default function SystemStatus() {
             <Box
               sx={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(3, 1fr)',
+                gridTemplateColumns: { xs: '1fr', sm: 'repeat(3, 1fr)' },
                 gap: 4,
                 mt: 8,
                 pt: 5,

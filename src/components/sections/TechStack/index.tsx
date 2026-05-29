@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from 'framer-motion';
+import { useState } from 'react';
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
@@ -8,7 +8,7 @@ import { useTheme } from '@mui/material/styles';
 import { AnimatedSection, AnimatedItem } from '../../common/AnimatedSection';
 import { SectionHeader } from '../../common/SectionHeader';
 import { SURFACE, BORDER, TEXT_SECONDARY, TEXT_DIM, TEXT_PRIMARY, FLAME, AZURE, VIOLET, CYAN, EMERALD } from '../../../theme/palette';
-import {  ChevronRight, Layout, Database, Cpu, Wrench, Sparkles } from 'lucide-react';
+// import {  Layout, Database, Cpu, Wrench, Sparkles } from 'lucide-react';
 import { 
   SiReact, SiTypescript, SiNodedotjs, SiExpress, 
   SiMongodb, SiRedis, SiDocker, SiGit, SiLinux, 
@@ -19,13 +19,13 @@ import {
 const allTechLabels = ['Frontend', 'Backend', 'Database', 'AI', 'Tools'] as const;
 type CategoryType = typeof allTechLabels[number];
 
-const categoryIcons: Record<CategoryType, any> = {
-  'Frontend': Layout,
-  'Backend': Cpu,
-  'Database': Database,
-  'AI': Sparkles,
-  'Tools': Wrench,
-};
+// const categoryIcons: Record<CategoryType, any> = {
+//   'Frontend': Layout,
+//   'Backend': Cpu,
+//   'Database': Database,
+//   'AI': Sparkles,
+//   'Tools': Wrench,
+// };
 
 const categoryColors: Record<CategoryType, string> = {
   'Frontend': AZURE,
@@ -100,25 +100,18 @@ function TechCard({ tech, index, isHighlighted }: { tech: typeof allTech[0], ind
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         style={{ 
-          rotateX: isHighlighted ? 0 : rotateX, 
-          rotateY: isHighlighted ? 0 : rotateY, 
+          rotateX, 
+          rotateY, 
           transformStyle: 'preserve-3d' 
         }}
         whileHover={{ scale: 1.02 }}
-        animate={isHighlighted ? {
-          scale: 1.05,
-          borderColor: `${tech.color}80`,
-          boxShadow: `0 0 30px ${tech.color}30`,
-        } : { 
-          scale: 1,
-          borderColor: BORDER,
-          boxShadow: 'none'
-        }}
         sx={{
           position: 'relative',
           height: { xs: 100, md: 140 },
           backgroundColor: SURFACE,
           border: `1px solid`,
+          borderColor: isHighlighted ? `${tech.color}80` : BORDER,
+          boxShadow: isHighlighted ? `0 0 30px ${tech.color}30` : 'none',
           borderRadius: { xs: '12px', md: '20px' },
           display: 'flex',
           flexDirection: 'column',
@@ -127,7 +120,8 @@ function TechCard({ tech, index, isHighlighted }: { tech: typeof allTech[0], ind
           gap: { xs: 1, md: 2 },
           cursor: 'none',
           overflow: 'hidden',
-          transition: 'border-color 0.3s ease, box-shadow 0.3s ease',
+          transition: 'border-color 0.4s ease, box-shadow 0.4s ease, scale 0.4s ease',
+          scale: isHighlighted ? 1.05 : 1,
           '&:hover': {
             borderColor: `${tech.color}40`,
             '& .glow': { opacity: 0.6 },
@@ -208,214 +202,144 @@ function TechCard({ tech, index, isHighlighted }: { tech: typeof allTech[0], ind
 }
 
 export default function TechStack() {
-  const [highlightedCategory, setHighlightedCategory] = useState<string | null>(null);
-  const [expandedCategory, setExpandedCategory] = useState<string | null>('Frontend');
+  const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
-  useEffect(() => {
-    if (highlightedCategory) {
-      const timer = setTimeout(() => {
-        setHighlightedCategory(null);
-      }, 7000);
-      return () => clearTimeout(timer);
-    }
-  }, [highlightedCategory]);
-
-  const DesktopView = () => (
-    <>
-      <Box
-        sx={{
-          display: 'grid',
-          gridTemplateColumns: { 
-            sm: 'repeat(3, 1fr)', 
-            md: 'repeat(5, 1fr)',
-            lg: 'repeat(6, 1fr)' 
-          },
-          gap: 3,
-          perspective: '2000px',
-        }}
-      >
-        {allTech.map((tech, index) => (
-          <TechCard 
-            key={tech.name} 
-            tech={tech} 
-            index={index} 
-            isHighlighted={highlightedCategory === tech.category}
-          />
-        ))}
-      </Box>
-
-      {/* Clickable Filter Strip */}
-      <Box
-        sx={{
-          mt: 12,
-          p: 4,
-          borderRadius: '16px',
-          backgroundColor: 'rgba(255,255,255,0.02)',
-          border: `1px solid ${BORDER}`,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: 4,
-          flexWrap: 'wrap'
-        }}
-      >
-        {allTechLabels.map((cat) => {
-          const isActive = highlightedCategory === cat;
-          return (
-            <Box 
-              key={cat} 
-              onClick={() => setHighlightedCategory(cat)}
-              sx={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                gap: 2,
-                cursor: 'pointer',
-                px: 3,
-                py: 1.5,
-                borderRadius: '100px',
-                transition: 'all 0.3s ease',
-                backgroundColor: isActive ? 'rgba(255,255,255,0.05)' : 'transparent',
-                border: `1px solid ${isActive ? FLAME : 'transparent'}`,
-                '&:hover': {
-                  backgroundColor: 'rgba(255,255,255,0.03)',
-                  '& .cat-dot': { backgroundColor: FLAME, boxShadow: `0 0 10px ${FLAME}` },
-                }
-              }}
-            >
-              <Box 
-                className="cat-dot"
-                sx={{ 
-                  width: 6, 
-                  height: 6, 
-                  borderRadius: '50%', 
-                  backgroundColor: isActive ? FLAME : TEXT_DIM,
-                  transition: 'all 0.3s ease',
-                  boxShadow: isActive ? `0 0 10px ${FLAME}` : 'none'
-                }} 
-              />
-              <Typography
-                sx={{
-                  fontFamily: "'IBM Plex Mono', monospace",
-                  fontSize: '0.75rem',
-                  fontWeight: 600,
-                  color: isActive ? TEXT_PRIMARY : TEXT_SECONDARY,
-                  letterSpacing: '0.05em',
-                  textTransform: 'uppercase'
-                }}
-              >
-                {cat}
-              </Typography>
-            </Box>
-          );
-        })}
-      </Box>
-    </>
-  );
-
-  const MobileView = () => (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-      {allTechLabels.map((cat) => {
-        const isOpen = expandedCategory === cat;
-        const Icon = categoryIcons[cat];
-        const color = categoryColors[cat];
-        const techs = allTech.filter(t => t.category === cat);
-
-        return (
-          <Box
-            key={cat}
-            sx={{
-              backgroundColor: SURFACE,
-              border: `1px solid ${isOpen ? color : BORDER}`,
-              borderRadius: '12px',
-              overflow: 'hidden',
-              transition: 'all 0.3s ease',
-            }}
-          >
-            <Box
-              onClick={() => {
-                if (navigator.vibrate) navigator.vibrate(10);
-                setExpandedCategory(isOpen ? null : cat);
-              }}
-              sx={{
-                p: 3,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                cursor: 'pointer',
-              }}
-            >
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Box
-                  sx={{
-                    p: 1,
-                    borderRadius: '8px',
-                    backgroundColor: `${color}10`,
-                    color: color,
-                    display: 'flex'
-                  }}
-                >
-                  <Icon size={18} />
-                </Box>
-                <Typography
-                  sx={{
-                    fontFamily: "'IBM Plex Mono', monospace",
-                    fontSize: '0.8rem',
-                    fontWeight: 600,
-                    color: isOpen ? TEXT_PRIMARY : TEXT_SECONDARY,
-                    letterSpacing: '0.1em',
-                    textTransform: 'uppercase'
-                  }}
-                >
-                  {cat}
-                </Typography>
-              </Box>
-              <motion.div animate={{ rotate: isOpen ? 90 : 0 }}>
-                <ChevronRight size={18} color={TEXT_DIM} />
-              </motion.div>
-            </Box>
-
-            <AnimatePresence initial={false}>
-              {isOpen && (
-                <Box
-                  component={motion.div}
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.3, ease: 'easeInOut' }}
-                >
-                  <Box
-                    sx={{
-                      p: 2,
-                      pt: 0,
-                      display: 'grid',
-                      gridTemplateColumns: 'repeat(3, 1fr)',
-                      gap: 2,
-                      backgroundColor: 'rgba(0,0,0,0.2)',
-                    }}
-                  >
-                    {techs.map((tech, idx) => (
-                      <TechCard key={tech.name} tech={tech} index={idx} isHighlighted={false} />
-                    ))}
-                  </Box>
-                </Box>
-              )}
-            </AnimatePresence>
-          </Box>
-        );
-      })}
-    </Box>
-  );
+  const activeCategory = hoveredCategory || selectedCategory;
 
   return (
-    <AnimatedSection id="techstack">
-      <Container maxWidth="lg" sx={{ py: { xs: 16, md: 24 } }}>
+    <AnimatedSection id="tech-stack">
+      <Container maxWidth="lg" sx={{ py: { xs: 8, md: 12 } }}>
         <AnimatedItem>
-          <SectionHeader number="03" title="Tech Stack" accentWord="& Tools" label="technologies" />
+          <SectionHeader 
+            number="05" 
+            title="Tech Graveyard" 
+            accentWord="Graveyard" 
+            label="system/memory_dump" 
+          />
         </AnimatedItem>
 
-        {isMobile ? <MobileView /> : <DesktopView />}
+        <Box sx={{ mt: 8 }}>
+          {!isMobile ? (
+            <Box>
+              <Box
+                sx={{
+                  display: 'grid',
+                  gridTemplateColumns: { 
+                    sm: 'repeat(3, 1fr)', 
+                    md: 'repeat(5, 1fr)',
+                    lg: 'repeat(6, 1fr)' 
+                  },
+                  gap: 3,
+                  perspective: '2000px',
+                }}
+              >
+                {allTech.map((tech, index) => (
+                  <TechCard 
+                    key={tech.name} 
+                    tech={tech} 
+                    index={index} 
+                    isHighlighted={activeCategory === tech.category}
+                  />
+                ))}
+              </Box>
+
+              {/* Clickable & Hoverable Filter Strip */}
+              <Box
+                sx={{
+                  mt: 12,
+                  p: 4,
+                  borderRadius: '16px',
+                  backgroundColor: 'rgba(255,255,255,0.02)',
+                  border: `1px solid ${BORDER}`,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 4,
+                  flexWrap: 'wrap'
+                }}
+              >
+                {allTechLabels.map((cat) => {
+                  const isActive = activeCategory === cat;
+                  const isSelected = selectedCategory === cat;
+                  return (
+                    <Box 
+                      key={cat} 
+                      onMouseEnter={() => setHoveredCategory(cat)}
+                      onMouseLeave={() => setHoveredCategory(null)}
+                      onClick={() => setSelectedCategory(isSelected ? null : cat)}
+                      sx={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        gap: 2,
+                        cursor: 'pointer',
+                        px: 3,
+                        py: 1.5,
+                        borderRadius: '100px',
+                        transition: 'all 0.3s ease',
+                        backgroundColor: isSelected ? 'rgba(255,255,255,0.05)' : 'transparent',
+                        border: `1px solid ${isSelected ? (categoryColors[cat] || FLAME) : 'transparent'}`,
+                        '&:hover': {
+                          backgroundColor: 'rgba(255,255,255,0.03)',
+                          '& .cat-dot': { 
+                            backgroundColor: categoryColors[cat] || FLAME, 
+                            boxShadow: `0 0 10px ${categoryColors[cat] || FLAME}` 
+                          },
+                        }
+                      }}
+                    >
+                      <Box 
+                        className="cat-dot"
+                        sx={{ 
+                          width: 8, 
+                          height: 8, 
+                          borderRadius: '50%', 
+                          backgroundColor: isActive ? (categoryColors[cat] || FLAME) : TEXT_DIM,
+                          transition: 'all 0.3s ease',
+                          boxShadow: isActive ? `0 0 10px ${categoryColors[cat] || FLAME}` : 'none'
+                        }} 
+                      />
+                      <Typography
+                        sx={{
+                          fontFamily: "'IBM Plex Mono', monospace",
+                          fontSize: '0.75rem',
+                          fontWeight: 600,
+                          color: isActive ? TEXT_PRIMARY : TEXT_DIM,
+                          letterSpacing: '0.1em',
+                          textTransform: 'uppercase'
+                        }}
+                      >
+                        {cat}
+                      </Typography>
+                    </Box>
+                  );
+                })}
+              </Box>
+            </Box>
+          ) : (
+            <Box>
+              {/* Simplified Mobile View - List all tech without re-rendering logic */}
+              <Box
+                sx={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(2, 1fr)',
+                  gap: 2,
+                }}
+              >
+                {allTech.map((tech, index) => (
+                  <TechCard 
+                    key={tech.name} 
+                    tech={tech} 
+                    index={index} 
+                    isHighlighted={false}
+                  />
+                ))}
+              </Box>
+            </Box>
+          )}
+        </Box>
       </Container>
     </AnimatedSection>
   );
