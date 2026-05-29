@@ -1,7 +1,6 @@
-import React from 'react';
 import { Box, Typography, IconButton } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Minus, Square } from 'lucide-react';
+import { X, Minus, Square, type LucideIcon } from 'lucide-react';
 import { SURFACE, BORDER, TEXT_PRIMARY, TEXT_SECONDARY } from '../../theme/palette';
 
 interface ProjectWindowProps {
@@ -9,7 +8,7 @@ interface ProjectWindowProps {
   onClose: () => void;
   title: string;
   children: React.ReactNode;
-  icon?: React.ElementType;
+  icon?: LucideIcon;
   color?: string;
 }
 

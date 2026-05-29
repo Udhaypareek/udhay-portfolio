@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Box, Modal, InputBase, Typography, List, ListItemButton, Divider, useTheme, useMediaQuery } from '@mui/material';
+import { useState, useEffect } from 'react';
+import { Box, Modal, InputBase, Typography, List, ListItemButton } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Command, ArrowRight } from 'lucide-react';
+import { Search, ArrowRight } from 'lucide-react';
 import { SURFACE, BORDER, TEXT_PRIMARY, TEXT_SECONDARY, FLAME, AZURE, CYAN, VIOLET } from '../../theme/palette';
 import { Home, User, Layers, Briefcase, Folder, Mail, GitGraph, Heart, Activity } from 'lucide-react';
 
@@ -21,8 +21,6 @@ export const CommandPalette = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const filteredItems = navItems.filter(item =>
     item.label.toLowerCase().includes(search.toLowerCase())

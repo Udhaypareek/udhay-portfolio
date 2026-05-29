@@ -7,7 +7,7 @@ interface SplashScreenProps {
   onComplete: () => void;
 }
 
-export function SplashScreen({ onComplete }: { onComplete: () => void }) {
+export function SplashScreen({ onComplete }: SplashScreenProps) {
   const [progress, setProgress] = useState(0);
   const [status, setStatus] = useState('Initializing Kernel...');
 
