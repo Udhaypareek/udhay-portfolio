@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from 'framer-motion';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
@@ -8,7 +8,7 @@ import { useTheme } from '@mui/material/styles';
 import { AnimatedSection, AnimatedItem } from '../../common/AnimatedSection';
 import { SectionHeader } from '../../common/SectionHeader';
 import { SURFACE, BORDER, TEXT_SECONDARY, TEXT_DIM, TEXT_PRIMARY, FLAME, AZURE, VIOLET, CYAN, EMERALD } from '../../../theme/palette';
-// import {  Layout, Database, Cpu, Wrench, Sparkles } from 'lucide-react';
+import {  ChevronRight, Layout, Database, Cpu, Wrench, Sparkles } from 'lucide-react';
 import { 
   SiReact, SiTypescript, SiNodedotjs, SiExpress, 
   SiMongodb, SiRedis, SiDocker, SiGit, SiLinux, 
@@ -19,13 +19,13 @@ import {
 const allTechLabels = ['Frontend', 'Backend', 'Database', 'AI', 'Tools'] as const;
 type CategoryType = typeof allTechLabels[number];
 
-// const categoryIcons: Record<CategoryType, any> = {
-//   'Frontend': Layout,
-//   'Backend': Cpu,
-//   'Database': Database,
-//   'AI': Sparkles,
-//   'Tools': Wrench,
-// };
+const categoryIcons: Record<CategoryType, any> = {
+  'Frontend': Layout,
+  'Backend': Cpu,
+  'Database': Database,
+  'AI': Sparkles,
+  'Tools': Wrench,
+};
 
 const categoryColors: Record<CategoryType, string> = {
   'Frontend': AZURE,
@@ -215,9 +215,9 @@ export default function TechStack() {
         <AnimatedItem>
           <SectionHeader 
             number="05" 
-            title="Tech Graveyard" 
-            accentWord="Graveyard" 
-            label="system/memory_dump" 
+            title="Tech" 
+            accentWord="& Tools" 
+            label="system/techstack" 
           />
         </AnimatedItem>
 
@@ -319,24 +319,98 @@ export default function TechStack() {
               </Box>
             </Box>
           ) : (
-            <Box>
-              {/* Simplified Mobile View - List all tech without re-rendering logic */}
-              <Box
-                sx={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(2, 1fr)',
-                  gap: 2,
-                }}
-              >
-                {allTech.map((tech, index) => (
-                  <TechCard 
-                    key={tech.name} 
-                    tech={tech} 
-                    index={index} 
-                    isHighlighted={false}
-                  />
-                ))}
-              </Box>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              {allTechLabels.map((cat) => {
+                // For mobile, we use a simple state to track expanded category to keep height manageable
+                // We'll use a local state or reuse selectedCategory if we want consistency
+                const isOpen = selectedCategory === cat;
+                const Icon = categoryIcons[cat];
+                const color = categoryColors[cat];
+                const techs = allTech.filter(t => t.category === cat);
+
+                return (
+                  <Box
+                    key={cat}
+                    sx={{
+                      backgroundColor: SURFACE,
+                      border: `1px solid ${isOpen ? color : BORDER}`,
+                      borderRadius: '12px',
+                      overflow: 'hidden',
+                      transition: 'all 0.3s ease',
+                    }}
+                  >
+                    <Box
+                      onClick={() => {
+                        if (navigator.vibrate) navigator.vibrate(10);
+                        setSelectedCategory(isOpen ? null : cat);
+                      }}
+                      sx={{
+                        p: 3,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <Box
+                          sx={{
+                            p: 1,
+                            borderRadius: '8px',
+                            backgroundColor: `${color}10`,
+                            color: color,
+                            display: 'flex'
+                          }}
+                        >
+                          <Icon size={18} />
+                        </Box>
+                        <Typography
+                          sx={{
+                            fontFamily: "'IBM Plex Mono', monospace",
+                            fontSize: '0.8rem',
+                            fontWeight: 600,
+                            color: isOpen ? TEXT_PRIMARY : TEXT_SECONDARY,
+                            letterSpacing: '0.1em',
+                            textTransform: 'uppercase'
+                          }}
+                        >
+                          {cat}
+                        </Typography>
+                      </Box>
+                      <motion.div animate={{ rotate: isOpen ? 90 : 0 }}>
+                        <ChevronRight size={18} color={TEXT_DIM} />
+                      </motion.div>
+                    </Box>
+
+                    <AnimatePresence initial={false}>
+                      {isOpen && (
+                        <Box
+                          component={motion.div}
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.3, ease: 'easeInOut' }}
+                        >
+                          <Box
+                            sx={{
+                              p: 2,
+                              pt: 0,
+                              display: 'grid',
+                              gridTemplateColumns: 'repeat(3, 1fr)',
+                              gap: 2,
+                              backgroundColor: 'rgba(0,0,0,0.2)',
+                            }}
+                          >
+                            {techs.map((tech, idx) => (
+                              <TechCard key={tech.name} tech={tech} index={idx} isHighlighted={false} />
+                            ))}
+                          </Box>
+                        </Box>
+                      )}
+                    </AnimatePresence>
+                  </Box>
+                );
+              })}
             </Box>
           )}
         </Box>
