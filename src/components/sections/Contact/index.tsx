@@ -95,7 +95,7 @@ export default function Contact() {
       setTimeout(() => {
         const win = window.open(method.href, '_blank', 'noopener,noreferrer');
         if (win) win.focus();
-      }, 400); // Shorter delay (400ms) to ensure it's not blocked while still showing launch
+      }, 1200); // Increased delay for the slower 2.5s animation
     }
   };
 
@@ -117,14 +117,14 @@ export default function Contact() {
                 filter: 'blur(0px)'
               }}
               animate={{ 
-                top: -150, 
+                top: -500, 
                 opacity: [1, 1, 0],
-                scale: [1, 2, 4],
-                filter: ['blur(0px)', 'blur(2px)', 'blur(20px)'],
+                scale: [1, 3, 6],
+                filter: ['blur(0px)', 'blur(4px)', 'blur(30px)'],
               }}
               transition={{ 
-                duration: 0.8, 
-                ease: [0.22, 1, 0.36, 1]
+                duration: 2.5, 
+                ease: [0.16, 1, 0.3, 1]
               }}
               onAnimationComplete={() => {
                 setFlyingIcons(prev => prev.filter(p => p.id !== item.id));

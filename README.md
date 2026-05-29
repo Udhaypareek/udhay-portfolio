@@ -1,73 +1,67 @@
-# React + TypeScript + Vite
+﻿# ~/udhay — Engineering Portfolio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+### Full Stack Developer & AI-Enabled Systems
+A high-fidelity, interactive portfolio built with a **Modern Linux Workstation** aesthetic. This project focuses on pushing the boundaries of WebGL, Framer Motion, and high-performance React architectures to create a \"Living Desktop\" experience.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🛠 Tech Stack
+*   **Framework**: [React 18](https://reactjs.org/) + [Vite](https://vitejs.dev/) (Lightning fast HMR & builds)
+*   **UI/UX Engine**: [Framer Motion](https://www.framer.com/motion/) (Physics-based animations & drag interaction)
+*   **Styling**: [Material UI (MUI) v5](https://mui.com/) + Emotion (Custom themed system)
+*   **3D Elements**: [Three.js](https://threejs.org/) via [@react-three/fiber](https://github.com/pmndrs/react-three-fiber) (Performant particle systems)
+*   **State Management**: [Zustand](https://github.com/pmndrs/zustand) (Atomic & lightweight state)
+*   **Smooth Scrolling**: [Lenis](https://github.com/darkroomengineering/lenis) (Cinematic inertia scrolling)
+*   **Typography**: IBM Plex Mono (Engineering feel) & Inter (Modern readability)
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## ✨ Key Features & UX Innovations
 
-## Expanding the ESLint configuration
+### 🖥 The \"Desktop-First\" Interaction
+*   **Draggable Project Windows**: On desktop, projects open in high-fidelity \"OS Windows\" that can be moved and interacted with, mirroring a real Linux development environment.
+*   **Fuzzy-Search Command Palette**: Built-in \Ctrl+K\ (or Menu) palette for instant navigation across the site using custom fuzzy logic.
+*   **Cinematic Launch Sequences**: Custom \"App Launch\" animations where icons physically fly to the top-bar before opening tabs, with perfectly timed 2.5s ease-curves.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 📱 High-Fidelity Mobile UX
+*   **Stacked Glass Drawers**: The Experience section uses a custom \"Folder Stack\" logic with \ackdrop-filter\ blur. Experience cards overlap like physical folders and \"pop\" into focus when tapped.
+*   **Adaptive Haptics**: Integrated \
+avigator.vibrate\ support for physical feedback on tech-tag clicks and project launches.
+*   **Adaptive Backgrounds**: A customized WebGL particle field that scales its complexity (4,000 → 1,500 particles) based on device processing power.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### 🐧 Terminal Engineering UI
+*   **Git-Branch Career Log**: A vertical timeline inspired by \git log --graph\, featuring dynamic node glowing and \"Commit Diff\" style responsibility lists.
+*   **System Status Dashboard**: Real-time performance monitoring and \"Terminal Blocks\" that display project metadata in raw JSON/CLI formats.
+*   **Typewriter Logic**: Custom hooks for simulating real-time terminal input buffers.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 🚀 Performance Optimizations
+*   **Lazy-Loaded Ecosystem**: Every major section is lazy-loaded with a customized suspense fallback to ensure minimal initial bundle size.
+*   **Low-End Device Detection**: Automatic detection of hardware constraints (CPU cores/DPI) to toggle between WebGL and CSS-Grid fallbacks.
+*   **Reduced Motion Support**: Full compliance with \prefers-reduced-motion\ to ensure accessibility for all users.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 📜 Career Log
+Managed via \src/data/experience.ts\, the portfolio tracks deep technical roles including:
+*   **Creative Upaay**: Full Stack Developer (Productivity Tools & MERN)
+*   **BetaZen InfoTech**: AI Systems Engineer (LLM Integration & RAG)
+*   **Chegg India**: Subject Matter Expert (Technical Problem Solving)
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+---
+
+## 🛠 Development
+\\\ash
+# Install dependencies
+npm install
+
+# Start the interactive dev server
+npm run dev
+
+# Build for production
+npm run build
+\\\
+
+---
+**~/udhay** | *Engineered with precision and a love for the terminal.*

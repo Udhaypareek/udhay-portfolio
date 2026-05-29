@@ -9,6 +9,7 @@ import { Footer } from './components/layout/Footer';
 import { ScrollToTop } from './components/common/ScrollToTop';
 import { SplashScreen } from './components/common/SplashScreen';
 import { CommandPalette } from './components/common/CommandPalette';
+import { HintToast } from './components/common/HintToast';
 import Lenis from 'lenis';
 import 'lenis/dist/lenis.css';
 
@@ -98,6 +99,7 @@ export default function App() {
             <Navbar />
             <ScrollToTop />
             <CommandPalette />
+            <HintToast />
             <Box 
               component="main" 
               role="main"

@@ -2,12 +2,17 @@ import { useRef, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import Box from '@mui/material/Box';
+import { useTheme, useMediaQuery } from '@mui/material';
 import { useAppStore } from '../../../store/useAppStore';
 import { FLAME, AZURE } from '../../../theme/palette';
 
 function ParticleField() {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const meshRef = useRef<THREE.Points>(null);
-  const count = 4000; // Increased count for finer details
+  
+  // Dynamic count for mobile performance
+  const count = isMobile ? 1500 : 4000; 
 
   const { positions, colors, speeds } = useMemo(() => {
     const positions = new Float32Array(count * 3);
@@ -19,14 +24,14 @@ function ParticleField() {
     const violetColor = new THREE.Color('#8B5CF6'); // Gemini/cosmic accent
 
     for (let i = 0; i < count; i++) {
-      // Spread positions widely
-      positions[i * 3] = (Math.random() - 0.5) * 30; // x
-      positions[i * 3 + 1] = (Math.random() - 0.5) * 20; // y
-      positions[i * 3 + 2] = (Math.random() - 0.5) * 15; // z
+      // Adjusted spread for mobile vs desktop
+      positions[i * 3] = (Math.random() - 0.5) * (isMobile ? 15 : 30);
+      positions[i * 3 + 1] = (Math.random() - 0.5) * (isMobile ? 30 : 20);
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 15;
 
-      // Very slow antigravity drift
+      // Drift
       speeds[i * 3] = (Math.random() - 0.5) * 0.002;
-      speeds[i * 3 + 1] = Math.random() * 0.004 + 0.001; // float up
+      speeds[i * 3 + 1] = Math.random() * 0.004 + 0.001; 
       speeds[i * 3 + 2] = (Math.random() - 0.5) * 0.002;
 
       const mix = Math.random();
@@ -45,7 +50,7 @@ function ParticleField() {
     }
 
     return { positions, colors, speeds };
-  }, []);
+  }, [count, isMobile]);
 
   // Create a round particle texture to avoid the "square box" look
   const circleTexture = useMemo(() => {
@@ -67,15 +72,18 @@ function ParticleField() {
     const positionsAttr = meshRef.current.geometry.attributes.position;
     const posArray = positionsAttr.array as Float32Array;
 
+    const xBound = isMobile ? 7.5 : 15;
+    const yBound = isMobile ? 15 : 10;
+
     for (let i = 0; i < count; i++) {
       posArray[i * 3] += speeds[i * 3];
       posArray[i * 3 + 1] += speeds[i * 3 + 1];
       posArray[i * 3 + 2] += speeds[i * 3 + 2];
 
       // Wrap top to bottom and side to side gracefully
-      if (posArray[i * 3 + 1] > 10) posArray[i * 3 + 1] = -10;
-      if (posArray[i * 3] > 15) posArray[i * 3] = -15;
-      if (posArray[i * 3] < -15) posArray[i * 3] = 15;
+      if (posArray[i * 3 + 1] > yBound) posArray[i * 3 + 1] = -yBound;
+      if (posArray[i * 3] > xBound) posArray[i * 3] = -xBound;
+      if (posArray[i * 3] < -xBound) posArray[i * 3] = xBound;
     }
 
     positionsAttr.needsUpdate = true;
@@ -89,6 +97,7 @@ function ParticleField() {
     <points ref={meshRef}>
       <bufferGeometry>
         <bufferAttribute
+          key={count}
           attach="attributes-position"
           count={count}
           args={[positions, 3]}
@@ -100,7 +109,7 @@ function ParticleField() {
         />
       </bufferGeometry>
       <pointsMaterial
-        size={0.04}
+        size={isMobile ? 0.06 : 0.04}
         vertexColors
         map={circleTexture}
         transparent

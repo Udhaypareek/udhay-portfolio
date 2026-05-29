@@ -3,9 +3,9 @@ import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import { AnimatedSection, AnimatedItem } from '../../common/AnimatedSection';
 import { SectionHeader } from '../../common/SectionHeader';
-import { SURFACE, BORDER, FLAME, TEXT_PRIMARY, TEXT_SECONDARY, TEXT_DIM, EMERALD, AZURE, VIOLET, CYAN } from '../../../theme/palette';
+import { SURFACE, BORDER, FLAME, TEXT_PRIMARY, TEXT_SECONDARY, TEXT_DIM, EMERALD, AZURE, VIOLET } from '../../../theme/palette';
 import {
-  Network, Brain, CircleDot, Terminal, GitBranch, Crosshair, Palette, BookOpen
+  Network, Brain, CircleDot, Terminal, Crosshair, Palette
 } from 'lucide-react';
 
 const infoRows = [
@@ -21,10 +21,10 @@ const interests = [
   { label: 'AI/LLM Systems', icon: Brain, color: VIOLET },
   { label: 'Real-Time Apps', icon: CircleDot, color: FLAME },
   { label: 'Linux & DevOps', icon: Terminal, color: EMERALD },
-  { label: 'System Design', icon: GitBranch, color: CYAN },
+  // { label: 'System Design', icon: GitBranch, color: CYAN },
   { label: 'API Design', icon: Crosshair, color: AZURE },
   { label: 'UI Engineering', icon: Palette, color: VIOLET },
-  { label: 'Open Source', icon: BookOpen, color: FLAME },
+  // { label: 'Open Source', icon: BookOpen, color: FLAME },
 ];
 
 export default function About() {

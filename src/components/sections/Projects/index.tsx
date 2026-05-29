@@ -43,7 +43,10 @@ export default function Projects() {
             }}
           >
             <Box
-              onClick={() => setExpandedProjectId(isOpen ? null : project.id)}
+              onClick={() => {
+                if (navigator.vibrate) navigator.vibrate(10);
+                setExpandedProjectId(isOpen ? null : project.id);
+              }}
               sx={{
                 p: 2,
                 display: 'flex',

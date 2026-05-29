@@ -48,7 +48,7 @@ export default function Hero() {
 
   useEffect(() => {
     const isLowEnd =
-      navigator.hardwareConcurrency < 4 || window.devicePixelRatio > 2.5;
+      navigator.hardwareConcurrency < 2; // Only true for very old devices
     setIsLowEnd(isLowEnd);
   }, [setIsLowEnd]);
 
@@ -72,7 +72,7 @@ export default function Hero() {
       } else {
         window.open(href, '_blank', 'noopener,noreferrer');
       }
-    }, 600);
+    }, 1200);
   };
 
   return (
@@ -106,12 +106,13 @@ export default function Hero() {
               zIndex: 9999
             }}
             animate={{ 
-              top: -50,
-              scale: 0.5,
+              top: -500,
+              scale: 6,
               opacity: 0,
+              filter: 'blur(20px)'
             }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 2.5, ease: [0.16, 1, 0.3, 1] }}
           >
             <Box sx={{ color: icon.color, filter: `drop-shadow(0 0 10px ${icon.color})` }}>
               <icon.Icon size={32} />

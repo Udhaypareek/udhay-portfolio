@@ -334,7 +334,10 @@ export default function TechStack() {
             }}
           >
             <Box
-              onClick={() => setExpandedCategory(isOpen ? null : cat)}
+              onClick={() => {
+                if (navigator.vibrate) navigator.vibrate(10);
+                setExpandedCategory(isOpen ? null : cat);
+              }}
               sx={{
                 p: 3,
                 display: 'flex',
